@@ -1,0 +1,2 @@
+rootProject.name='PrivateQuick'
+include ':app', ':kit', ':pdfCore'
