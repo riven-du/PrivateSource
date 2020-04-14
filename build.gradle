@@ -34,6 +34,8 @@ buildscript {
     dependencies {
         classpath tools_build_gradle
         classpath kotlin_gradle_plugin
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
@@ -41,6 +43,22 @@ allprojects {
     repositories {
         google()
         jcenter()
+    }
+}
+
+allprojects {
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+    }
+}
+allprojects {
+    tasks.withType(Javadoc) {
+        options{
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/8/docs/api"
+        }
     }
 }
 

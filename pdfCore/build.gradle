@@ -1,6 +1,22 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'pdfium-android-core'
+
+    publishedGroupId = 'cn.com.quick'
+    libraryName = 'PdfiumAndroidCore'
+    artifact = 'pdfium-android-core'
+
+    libraryDescription = 'Fork of library for rendering PDFs on Android\'s Surface or Bitmap'
+
+    siteUrl = 'https://github.com/riven-du/PrivateSource'
+    gitUrl = 'https://github.com/riven-du/PrivateSource.git'
+
+    libraryVersion = '1.0.0'
+}
+
 android {
     compileSdkVersion compile_sdk_version
     buildToolsVersion build_tools_version
@@ -8,24 +24,6 @@ android {
     defaultConfig {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-
-        ndk {
-            //生成相应平台.so
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
-        }
-
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_PLATFORM=android-19', '-DANDROID_TOOLCHAIN=clang'
-                cppFlags "-D__STDC_FORMAT_MACROS"
-            }
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "src/main/cpp/CMakeLists.txt"
-        }
     }
 
     buildTypes {
@@ -34,12 +32,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets{
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDir 'src/main/libs'
+        }
+    }
 }
 
 dependencies {
     compileOnly kotlin_stdlib
     compileOnly appcompat
-    compileOnly core_ktx
-    compileOnly viewpager2
-    compileOnly project(path: ':kit')
 }
+
+apply from: '../installv1.gradle'
+apply from: '../bintrayv1.gradle'
