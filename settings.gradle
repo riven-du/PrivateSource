@@ -1,2 +1,3 @@
 rootProject.name='PrivateQuick'
-include ':app', ':kit', ':pdfCore'
+include ':app'
+include ':lib-download'
