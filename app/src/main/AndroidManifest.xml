@@ -25,7 +25,10 @@
             android:exported="false"
             android:process=":p1"
             />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden|keyboard|screenLayout"
+            android:windowSoftInputMode="adjustNothing"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
