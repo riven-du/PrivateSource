@@ -14,9 +14,9 @@ buildscript {
 
         // android
         compile_sdk_version = 29
-        build_tools_version = "29.0.3"
+//        build_tools_version = "29.0.3"
         min_sdk_version = 21
-        target_sdk_version = 29
+        target_sdk_version = 28
 
         // dependencies
         kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

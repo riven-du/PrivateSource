@@ -1,7 +1,12 @@
 package cn.com.quick.p
 
+import android.content.ContentValues
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -9,9 +14,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import cn.com.quick.utils.QuickKeyboardUtils
-import cn.com.quick.widget.vp.indicator.DotPagesView
+import java.io.File
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,20 +34,23 @@ class MainActivity : AppCompatActivity() {
         val editText = EditText(this)
         editText.hint = "你好"
         view.addView(editText)
-        val dot = DotPagesView(this, ViewPager(this), 6)
-        view.addView(dot, 66*3, 5*3)
         viewSpace = View(this)
         viewSpace.setBackgroundColor(Color.BLUE)
         view.addView(viewSpace, 1080, 0)
 
         val btn = Button(this)
         btn.setOnClickListener {
-            QuickKeyboardUtils.showSoftInput(editText)
         }
         view.addView(btn)
         scrollView.addView(view)
         return@lazy scrollView
     }
+
+
+    private val projectionPhotos = arrayOf(
+        MediaStore.Files.FileColumns.TITLE,
+        MediaStore.Files.FileColumns._ID
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +62,52 @@ class MainActivity : AppCompatActivity() {
         rootView.post {
             val keyboardHeight = QuickKeyboardUtils.getKeyboardHeight(this)
             quickLogE("keyboardHeight-> $keyboardHeight")
+        }
+        thread {
+            try {
+
+//                contentResolver.query()
+
+                val fis = assets.open("a.pdf")
+                val contentValues = ContentValues()
+                contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, "a.pdf")
+
+                val url = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, "file/a")
+                    MediaStore.Files.getContentUri("external")
+                } else {
+                    Uri.fromFile(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + File.separator + "Camera"))
+                }
+
+                quickLogE("$url")
+
+                val insertUrl = contentResolver.insert(
+                    url,
+                    contentValues
+                )
+
+                val os = contentResolver.openOutputStream(insertUrl!!)!!
+                var read: Int
+
+                try {
+                    val buffer = ByteArray(1444)
+
+                    while (fis.read(buffer).also { read = it } != -1) {
+                        os.write(buffer, 0, read)
+                        os.flush()
+                    }
+
+                    os.close()
+                    fis.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
