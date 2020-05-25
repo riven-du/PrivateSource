@@ -1,14 +1,7 @@
-package cn.com.quick.p
+package cn.com.quick.utils
 
 import android.text.TextUtils
 import android.util.Log
-
-/**
- * Author: duqi
- * Date :2020/3/16 23:54
- * Description:
- * History
- */
 
 private const val DEFAULT_TAG = "Quick"
 private val LINE_SEPARATOR = System.getProperty("line.separator")

@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import cn.com.quick.utils.QuickKeyboardUtils
+import cn.com.quick.utils.quickLogE
 import java.io.File
 import kotlin.concurrent.thread
 

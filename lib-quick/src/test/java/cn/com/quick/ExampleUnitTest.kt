@@ -1,5 +1,6 @@
 package cn.com.quick
 
+import cn.com.quick.media.MediaController
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -12,6 +13,8 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        //assertEquals(4, 2 + 2)
+
+        println(MediaController.QUERY_BY)
     }
 }
