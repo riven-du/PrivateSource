@@ -19,9 +19,17 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 
 /**
- * Date :2020/5/19 14:40
- * Description:
- * History
+ * 竖屏下获取键盘高度的解决方案（不支持分屏）
+ * 原理：
+ * 在宿主 Activity 上重叠一个 PopupWindow（宽度为 0， 高度为 MATCH_PARENT），
+ *
+ * 设置 Activity 的 softInputMode = SOFT_INPUT_ADJUST_NOTHING
+ * 设置 PopupWindow 的 softInputMode = SOFT_INPUT_ADJUST_RESIZE
+ *
+ * 软键盘弹起来时： 键盘高度 = Activity 根部局的高度 -  PopupWindow 根部局的高度
+ *
+ * 注意：
+ *     1、有些全面屏手机导航可以切换成普通导航模式，这两种模式下键盘的高度不同
  */
 object QuickKeyboardUtils {
 
@@ -233,6 +241,10 @@ object QuickKeyboardUtils {
             popupLayout.viewTreeObserver.addOnGlobalLayoutListener(this)
         }
 
+        /**
+         * 显示 PopupWindow
+         * (x,y)坐标，为宿主 activity rect 的 left top
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_START)
         fun onStart() {
             decorView.post {
@@ -244,23 +256,36 @@ object QuickKeyboardUtils {
             }
         }
 
+        /**
+         * 设置 activity 的软键盘模式为 SOFT_INPUT_ADJUST_NOTHING
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
         fun onResume() {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
 
+        /**
+         * 关闭键盘，并且键盘模式设置为初始的键盘模式
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
         fun onPause() {
             hideSoftInput(activity)
             window.setSoftInputMode(activityOriginalSoftInputMode)
         }
 
+        /**
+         * PopupWindow contentView 移除监听
+         * 关闭
+         */
         @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         fun onDestroy() {
             popupLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
             dismiss()
         }
 
+        /**
+         * 分发键盘高度
+         */
         override fun onGlobalLayout() {
             try {
                 popupLayout.getWindowVisibleDisplayFrame(popupRect)
