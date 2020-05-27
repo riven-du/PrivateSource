@@ -1,11 +1,7 @@
 package cn.com.quick.p
 
-import android.content.ContentValues
 import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.view.Gravity
 import android.view.View
@@ -14,9 +10,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
+import cn.com.quick.media.QuickMediaQuery
 import cn.com.quick.utils.QuickKeyboardUtils
 import cn.com.quick.utils.quickLogE
-import java.io.File
 import kotlin.concurrent.thread
 
 
@@ -60,55 +56,9 @@ class MainActivity : AppCompatActivity() {
         QuickKeyboardUtils.init(this)
         QuickKeyboardUtils.startObserver(this, keyboardHeightBlock)
 
-        rootView.post {
-            val keyboardHeight = QuickKeyboardUtils.getKeyboardHeight(this)
-            quickLogE("keyboardHeight-> $keyboardHeight")
-        }
+        val quickMediaQuery = QuickMediaQuery(this)
         thread {
-            try {
-
-//                contentResolver.query()
-
-                val fis = assets.open("a.pdf")
-                val contentValues = ContentValues()
-                contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, "a.pdf")
-
-                val url = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, "file/a")
-                    MediaStore.Files.getContentUri("external")
-                } else {
-                    Uri.fromFile(File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + File.separator + "Camera"))
-                }
-
-                quickLogE("$url")
-
-                val insertUrl = contentResolver.insert(
-                    url,
-                    contentValues
-                )
-
-                val os = contentResolver.openOutputStream(insertUrl!!)!!
-                var read: Int
-
-                try {
-                    val buffer = ByteArray(1444)
-
-                    while (fis.read(buffer).also { read = it } != -1) {
-                        os.write(buffer, 0, read)
-                        os.flush()
-                    }
-
-                    os.close()
-                    fis.close()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            quickMediaQuery.queryAllDoc(this)
         }
     }
 

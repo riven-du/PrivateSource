@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Process
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import cn.com.quick.utils.quickLogE
 import kotlinx.android.synthetic.main.activity_second.*
 import java.io.File
 
